@@ -19,7 +19,7 @@ def webApiGet(methodName, instanceName, clientRequestId):
         return json.loads(response.read().decode())
 
 def printASA(endpointSets):
-    flatIps[]
+    flatIps=[]
     with open('O365-CiscoASA-ObjectGroups.txt', 'w') as output:
         for endpointSet in endpointSets:
             if endpointSet['category'] in ('Optimize', 'Allow'):
