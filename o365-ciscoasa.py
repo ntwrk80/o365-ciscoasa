@@ -17,6 +17,31 @@ def webApiGet(methodName, instanceName, clientRequestId):
     with urllib.request.urlopen(request) as response:
         return json.loads(response.read().decode())
 
+def printASA(endpointSets):
+    with open('O365-CiscoASA-ObjectGroups.txt', 'w') as output:
+        for endpointSet in endpointSets:
+            if endpointSet['category'] in ('Optimize', 'Allow'):
+                ips = endpointSet['ips'] if 'ips' in endpointSet else []
+                category = endpointSet['category']
+                serviceArea = endpointSet['serviceArea']
+                # IPv4 strings have dots while IPv6 strings have colons
+                ip4s = [ip for ip in ips if '.' in ip]
+                tcpPorts = endpointSet['tcpPorts'] if 'tcpPorts' in endpointSet else ''
+                udpPorts = endpointSet['udpPorts'] if 'udpPorts' in endpointSet else ''
+                flatIps.extend([(serviceArea, category, ip, tcpPorts, udpPorts) for ip in ip4s])
+        print('IPv4 Firewall IP Address Ranges')
+        #print (flatIps)
+        currentServiceArea = " "
+        for ip in flatIps:
+            serviceArea = ip [0]
+            if serviceArea != currentServiceArea:
+                if currentServiceArea != " ":
+                currentServiceArea = serviceArea
+            ipNet = ipaddress.ip_network(ip[2])
+            groupList =+ asaIpNetworkObject(ipNet,currentServiceArea)
+            output.write (groupList[1] + "\n")
+            output.write (asaIPNetworkGroupObject(currentServiceArea,groupList))
+
 def printXML(endpointSets):
     with open('O365-CiscoASA-ObjectGroups.txt', 'w') as output:
 
@@ -47,17 +72,22 @@ def printXML(endpointSets):
             output.write (f"          <Range from=\"{ipStart}\" to=\"{ipEnd}\"/>\n")
         output.write ("     </AddressGroup>\n")
         output.write ("</AddressGroups>\n")
-        #print('\n'.join(sorted(set([ip for (category, ip, tcpPorts, udpPorts) in flatIps]))))
-        #print('URLs for Proxy Server')
-        #print(','.join(sorted(set([url for (category, url, tcpPorts, udpPorts) in flatUrls]))))
 
-        # TODO send mail (e.g. with smtplib/email modules) with new endpoints data
-def asaIpNetworkObject(ip,net,productname):
-    #Started as code from https://www.ifconfig.it
-	objname = productname+"_"+ip
-	print "object network "+objname
-	print "subnet "+net
-	return objname
+def asaIpNetworkGroupObject(groupName,objectList):
+    grpObject = "object-group network " + groupName + "\n"
+    for item in objectList:
+        grpObject =+ "   network-object object" + item[0] + "\n"
+    grpObject =+ "\n"
+    return grpObject
+
+def asaIpNetworkObject(network,productname):
+    ip = network.network_address
+    net = network.netmask
+	name = "o365." + productname + "_" + ip
+    networkObject = " "
+	networkObject = "  object network " + name + "\n"
+	networkObject =+ "    subnet " + net + "\n"
+	return name, networkObject
 
 def asaFqdnNetworkObject(fqdn,productname):
     #Started as code from https://www.ifconfig.it
