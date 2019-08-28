@@ -30,6 +30,7 @@ def printASA(endpointSets):
                 tcpPorts = endpointSet['tcpPorts'] if 'tcpPorts' in endpointSet else ''
                 udpPorts = endpointSet['udpPorts'] if 'udpPorts' in endpointSet else ''
                 print("Test")
+                print(ip4s)
                 flatIps.extend([(serviceArea, category, ip, tcpPorts, udpPorts) for ip in ip4s])
 
         print('IPv4 Firewall IP Address Ranges')
