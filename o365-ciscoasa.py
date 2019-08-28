@@ -91,8 +91,7 @@ def asaIpNetworkObject(network,productname):
     net = str(network.netmask)
     name = "o365." + productname + "_" + ip
     networkObject = " "
-    networkObject = "  object network " + name + "\n"
-    networkObject =+ "    subnet " + net + "\n"
+    networkObject = f"  object network  name \n    subnet net + \n"
     return name, networkObject
 
 def asaFqdnNetworkObject(fqdn,productname):
