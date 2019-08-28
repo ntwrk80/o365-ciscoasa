@@ -4,6 +4,7 @@ import uuid
 import os
 import ipaddress
 import argparse
+import sys
 
 #Original starting code from Microsoft article:
 #(https://docs.microsoft.com/en-us/office365/enterprise/office-365-ip-web-service)
@@ -28,7 +29,9 @@ def printASA(endpointSets):
                 ip4s = [ip for ip in ips if '.' in ip]
                 tcpPorts = endpointSet['tcpPorts'] if 'tcpPorts' in endpointSet else ''
                 udpPorts = endpointSet['udpPorts'] if 'udpPorts' in endpointSet else ''
+                print("Test")
                 flatIps.extend([(serviceArea, category, ip, tcpPorts, udpPorts) for ip in ip4s])
+
         print('IPv4 Firewall IP Address Ranges')
         #print (flatIps)
         currentServiceArea = " "
@@ -36,7 +39,7 @@ def printASA(endpointSets):
             serviceArea = ip [0]
             if serviceArea != currentServiceArea:
                 if currentServiceArea != " ":
-                currentServiceArea = serviceArea
+                    currentServiceArea = serviceArea
             ipNet = ipaddress.ip_network(ip[2])
             groupList =+ asaIpNetworkObject(ipNet,currentServiceArea)
             output.write (groupList[1] + "\n")
@@ -83,22 +86,22 @@ def asaIpNetworkGroupObject(groupName,objectList):
 def asaIpNetworkObject(network,productname):
     ip = network.network_address
     net = network.netmask
-	name = "o365." + productname + "_" + ip
+    name = "o365." + productname + "_" + ip
     networkObject = " "
-	networkObject = "  object network " + name + "\n"
-	networkObject =+ "    subnet " + net + "\n"
-	return name, networkObject
+    networkObject = "  object network " + name + "\n"
+    networkObject =+ "    subnet " + net + "\n"
+    return name, networkObject
 
 def asaFqdnNetworkObject(fqdn,productname):
     #Started as code from https://www.ifconfig.it
-	#fqdn = fqdn.replace ("*","")
-	fqdn = re.sub("^\*\.","",fqdn)
-	fqdn = re.sub("^.*\*","",fqdn)
-	fqdn = re.sub("^\.","",fqdn)
-	objname = productname+"_"+fqdn
-	print "object network "+objname
-	print "fqdn "+fqdn
-	return objname
+    #fqdn = fqdn.replace ("*","")
+    fqdn = re.sub("^\*\.","",fqdn)
+    fqdn = re.sub("^.*\*","",fqdn)
+    fqdn = re.sub("^\.","",fqdn)
+    objname = productname+"_"+fqdn
+    print ("object network " + objname)
+    print ("fqdn "+fqdn)
+    return objname
 
 def slash2sub(ip):
     #Started as code from https://www.ifconfig.it
@@ -204,7 +207,7 @@ def main (argv):
                 udpPorts = endpointSet['udpPorts'] if 'udpPorts' in endpointSet else ''
                 flatUrls.extend([(category, url, tcpPorts, udpPorts) for url in urls])
         flatIps = []
-        printXML(endpointSets)
+        printASA(endpointSets)
     else:
         print('Office 365 worldwide commercial service instance endpoints are up-to-date')
 
