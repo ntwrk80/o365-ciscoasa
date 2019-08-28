@@ -87,9 +87,9 @@ def asaIpNetworkGroupObject(groupName,objectList):
     return grpObject
 
 def asaIpNetworkObject(network,productname):
-    ip = network.network_address
-    net = network.netmask
-    name = "o365." + productname + "_" + str(ip)
+    ip = str(network.network_address)
+    net = str(network.netmask)
+    name = "o365." + productname + "_" + ip
     networkObject = " "
     networkObject = "  object network " + name + "\n"
     networkObject =+ "    subnet " + net + "\n"
