@@ -104,7 +104,8 @@ def asaIpNetworkObject(network,productname):
     name = "o365." + productname.lower() + "_" + ip
     networkObject = " "
     networkObject = f"  object network {name} \n    subnet {ip} {net} \n    description O365 {productname.lower()} \n\n"
-    return (name, networkObject)
+    returnObject = (name,networkObject)
+    return returnObject
 
 def asaFqdnNetworkObject(fqdn,productname):
     #Started as code from https://www.ifconfig.it
