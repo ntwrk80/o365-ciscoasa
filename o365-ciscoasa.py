@@ -84,7 +84,7 @@ def asaIpNetworkGroupObject(groupName,objectList):
     grpObject = "object-group network " + groupName + "\n"
     for item in objectList:
         grpObject += f"   network-object object item[0] \n"
-    grpObject =+ "\n"
+    grpObject += "\n"
     return grpObject
 
 def asaIpNetworkObject(network,productname):
