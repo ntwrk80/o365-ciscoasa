@@ -105,7 +105,7 @@ def asaIpNetworkObject(network,productname):
     net = str(network.netmask)
     name = "o365." + productname.lower() + "_" + ip
     networkObject = " "
-    networkObject = f"  object network {name} \n    subnet {ip} {net} \n    description O365 {productname.lower()} \n\n"
+    networkObject = f"object network {name} \n    subnet {ip} {net} \n    description O365 {productname.lower()} \n\n"
     returnObject = (name,networkObject)
     return returnObject
 
