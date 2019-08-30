@@ -47,7 +47,7 @@ def printASA(endpointSets):
             ipNet = ipaddress.ip_network(ip[2])
             groupList = asaIpNetworkObject(ipNet,currentServiceArea)
             output.write (groupList[1] + "\n")
-        output.write (asaIPNetworkGroupObject(currentServiceArea,groupList))
+        output.write (asaIpNetworkGroupObject(currentServiceArea,groupList))
 
 def printXML(endpointSets):
     with open('O365-CiscoASA-ObjectGroups.txt', 'w') as output:
