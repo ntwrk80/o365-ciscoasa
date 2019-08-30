@@ -43,8 +43,7 @@ def printASA(endpointSets):
             serviceArea = ip [0]
             print (f"ServiceArea: {serviceArea} \n")
             if serviceArea != currentServiceArea:
-                if currentServiceArea != " ":
-                    currentServiceArea = serviceArea
+                currentServiceArea = serviceArea
             ipNet = ipaddress.ip_network(ip[2])
             print ("\n")
             groupList = asaIpNetworkObject(ipNet,currentServiceArea)
