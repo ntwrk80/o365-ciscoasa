@@ -50,6 +50,9 @@ def printASA(endpointSets):
             print ("\n")
             groupList += asaIpNetworkObject(ipNet,currentServiceArea)
             output.write (groupList[1] + "\n")
+        print("DEBUG: groupList\n")
+        print(groupList)
+        print("DEBGUG \n")
         output.write (asaIpNetworkGroupObject(currentServiceArea,groupList))
 
 def printXML(endpointSets):
