@@ -45,6 +45,7 @@ def printASA(endpointSets):
                 if currentServiceArea != " ":
                     currentServiceArea = serviceArea
             ipNet = ipaddress.ip_network(ip[2])
+            print ("\n")
             groupList = asaIpNetworkObject(ipNet,currentServiceArea)
             output.write (groupList[1] + "\n")
         output.write (asaIpNetworkGroupObject(currentServiceArea,groupList))
@@ -92,7 +93,7 @@ def asaIpNetworkObject(network,productname):
     net = str(network.netmask)
     name = "o365." + productname + "_" + ip
     networkObject = " "
-    networkObject = f"  object network {name} \n    subnet {net} \n"
+    networkObject = f"  object network {name} \n    subnet {ip} {net} \n   description O365 {productname} \n\n"
     return name, networkObject
 
 def asaFqdnNetworkObject(fqdn,productname):
