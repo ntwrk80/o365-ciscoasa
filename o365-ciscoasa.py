@@ -82,6 +82,7 @@ def printXML(endpointSets):
         output.write ("</AddressGroups>\n")
 
 def asaIpNetworkGroupObject(groupName,objectList):
+    print ("ENTER asaIpNetworkGroupObject\n")
     grpObject = "object-group network " + groupName.lower() + "\n"
     for item in objectList:
         grpObject += f"   network-object object" + item[0] + "\n"
@@ -89,6 +90,7 @@ def asaIpNetworkGroupObject(groupName,objectList):
     return grpObject
 
 def asaIpNetworkObject(network,productname):
+    print ("ENTER asaIPNetworkObject\n")
     ip = str(network.network_address)
     net = str(network.netmask)
     name = "o365." + productname.lower() + "_" + ip
