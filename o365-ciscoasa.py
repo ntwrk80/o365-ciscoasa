@@ -38,15 +38,16 @@ def printASA(endpointSets):
         print('IPv4 Firewall IP Address Ranges')
         #print (flatIps)
         currentServiceArea = " "
+        groupList = []
         for ip in flatIps:
             serviceArea = ip [0]
             if serviceArea != currentServiceArea:
                 if currentServiceArea != " ":
                     currentServiceArea = serviceArea
             ipNet = ipaddress.ip_network(ip[2])
-            groupList =+ asaIpNetworkObject(ipNet,currentServiceArea)
+            groupList = asaIpNetworkObject(ipNet,currentServiceArea)
             output.write (groupList[1] + "\n")
-            output.write (asaIPNetworkGroupObject(currentServiceArea,groupList))
+        output.write (asaIPNetworkGroupObject(currentServiceArea,groupList))
 
 def printXML(endpointSets):
     with open('O365-CiscoASA-ObjectGroups.txt', 'w') as output:
