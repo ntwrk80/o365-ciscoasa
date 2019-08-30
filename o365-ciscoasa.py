@@ -83,7 +83,7 @@ def printXML(endpointSets):
 def asaIpNetworkGroupObject(groupName,objectList):
     grpObject = "object-group network " + groupName + "\n"
     for item in objectList:
-        grpObject =+ "   network-object object" + item[0] + "\n"
+        grpObject += f"   network-object object item[0] \n"
     grpObject =+ "\n"
     return grpObject
 
