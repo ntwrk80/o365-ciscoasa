@@ -41,6 +41,7 @@ def printASA(endpointSets):
         groupList = []
         for ip in flatIps:
             serviceArea = ip [0]
+            print (f"ServiceArea: {serviceArea} \n")
             if serviceArea != currentServiceArea:
                 if currentServiceArea != " ":
                     currentServiceArea = serviceArea
