@@ -90,6 +90,9 @@ def asaIpNetworkGroupObject(groupName,objectList):
     print ("ENTER asaIpNetworkGroupObject\n")
     grpObject = "object-group network " + groupName.lower() + "\n"
     for item in objectList:
+        print ("DEBUG: Print objectList item\n")
+        print (item)
+        print ("DEBUG")
         grpObject += f"   network-object object" + item[0] + "\n"
     grpObject += "\n"
     return grpObject
