@@ -30,12 +30,12 @@ def printASA(endpointSets):
                 ip4s = [ip for ip in ips if '.' in ip]
                 tcpPorts = endpointSet['tcpPorts'] if 'tcpPorts' in endpointSet else ''
                 udpPorts = endpointSet['udpPorts'] if 'udpPorts' in endpointSet else ''
-                print("Test")
-                print(ip4s)
+                #print("Test")
+                #print(ip4s)
                 for ip in ip4s:
                     flatIps.extend([(serviceArea, category, ip, tcpPorts, udpPorts)])
 
-        print('IPv4 Firewall IP Address Ranges')
+        print("Converting O365 Endpoints into ASA Groups")
         #print (flatIps)
         currentServiceArea = " "
         groupList = []
@@ -48,13 +48,12 @@ def printASA(endpointSets):
                 groupList = []
                 currentServiceArea = serviceArea
             ipNet = ipaddress.ip_network(ip[2])
-            print ("\n")
             asaOutput=asaIpNetworkObject(ipNet,currentServiceArea)
             groupList.append(asaOutput)
             output.write (asaOutput[1] + "\n")
-        print("DEBUG: groupList\n")
-        print(groupList)
-        print("DEBGUG \n")
+        #print("DEBUG: groupList\n")
+        #print(groupList)
+        #print("DEBGUG \n")
         output.write (asaIpNetworkGroupObject(currentServiceArea,groupList))
 
 def printXML(endpointSets):
@@ -89,18 +88,18 @@ def printXML(endpointSets):
         output.write ("</AddressGroups>\n")
 
 def asaIpNetworkGroupObject(groupName,objectList):
-    print ("ENTER asaIpNetworkGroupObject\n")
+    #print ("ENTER asaIpNetworkGroupObject\n")
     grpObject = "object-group network " + groupName.lower() + "\n"
     for item in objectList:
-        print ("DEBUG: Print objectList item\n")
-        print (item)
-        print ("DEBUG")
+        #print ("DEBUG: Print objectList item\n")
+        #print (item)
+        #print ("DEBUG")
         grpObject += f"   network-object object " + item[0] + "\n"
     grpObject += "\n"
     return grpObject
 
 def asaIpNetworkObject(network,productname):
-    print ("ENTER asaIPNetworkObject\n")
+    #print ("ENTER asaIPNetworkObject\n")
     ip = str(network.network_address)
     net = str(network.netmask)
     name = "o365." + productname.lower() + "_" + ip
@@ -108,89 +107,6 @@ def asaIpNetworkObject(network,productname):
     networkObject = f"object network {name} \n    subnet {ip} {net} \n    description O365 {productname.lower()} \n\n"
     returnObject = (name,networkObject)
     return returnObject
-
-def asaFqdnNetworkObject(fqdn,productname):
-    #Started as code from https://www.ifconfig.it
-    #fqdn = fqdn.replace ("*","")
-    fqdn = re.sub("^\*\.","",fqdn)
-    fqdn = re.sub("^.*\*","",fqdn)
-    fqdn = re.sub("^\.","",fqdn)
-    objname = productname+"_"+fqdn
-    print ("object network " + objname)
-    print ("fqdn "+fqdn)
-    return objname
-
-def slash2sub(ip):
-    #Started as code from https://www.ifconfig.it
-	sub = ip
-	if "/4" in ip:
-		sub = ip.replace("/4"," 240.0.0.0")
-	elif "/5" in ip:
-		sub = ip.replace("/5"," 248.0.0.0")
-	elif "/6" in ip:
-		sub = ip.replace("/6"," 252.0.0.0")
-	elif "/7" in ip:
-		sub = ip.replace("/7"," 254.0.0.0")
-	elif "/8" in ip:
-		sub = ip.replace("/8"," 255.0.0.0")
-	elif "/9" in ip:
-		sub = ip.replace("/9"," 255.128.0.0")
-	elif "/10" in ip:
-		sub = ip.replace("/10"," 255.192.0.0")
-	elif "/11" in ip:
-		sub = ip.replace("/11"," 255.224.0.0")
-	elif "/12" in ip:
-		sub = ip.replace("/12"," 255.240.0.0")
-	elif "/13" in ip:
-		sub = ip.replace("/13"," 255.248.0.0")
-	elif "/14" in ip:
-		sub = ip.replace("/14"," 255.252.0.0")
-	elif "/15" in ip:
-		sub = ip.replace("/15"," 255.254.0.0")
-	elif "/16" in ip:
-		sub = ip.replace("/16"," 255.255.0.0")
-	elif "/17" in ip:
-		sub = ip.replace("/17"," 255.255.128.0")
-	elif "/18" in ip:
-		sub = ip.replace("/18"," 255.255.192.0")
-	elif "/19" in ip:
-		sub = ip.replace("/19"," 255.255.224.0")
-	elif "/20" in ip:
-		sub = ip.replace("/20"," 255.255.240.0")
-	elif "/21" in ip:
-		sub = ip.replace("/21"," 255.255.248.0")
-	elif "/22" in ip:
-		sub = ip.replace("/22"," 255.255.252.0")
-	elif "/23" in ip:
-		sub = ip.replace("/23"," 255.255.254.0")
-	elif "/24" in ip:
-		sub = ip.replace("/24"," 255.255.255.0")
-	elif "/25" in ip:
-		sub = ip.replace("/25"," 255.255.255.128")
-	elif "/26" in ip:
-		sub = ip.replace("/26"," 255.255.255.192")
-	elif "/27" in ip:
-		sub = ip.replace("/27"," 255.255.255.224")
-	elif "/28" in ip:
-		sub = ip.replace("/28"," 255.255.255.240")
-	elif "/29" in ip:
-		sub = ip.replace("/29"," 255.255.255.248")
-	elif "/30" in ip:
-		sub = ip.replace("/30"," 255.255.255.252")
-	elif "/31" in ip:
-		sub = ip.replace("/31"," 255.255.255.254",1)
-	elif "/32" in ip:
-		sub = ip.replace("/32"," 255.255.255.255")
-	elif "/1" in ip:
-		sub = ip.replace("/1"," 128.0.0.0")
-	elif "/2" in ip:
-		sub = ip.replace("/2"," 192.0.0.0")
-	elif "/3" in ip:
-		sub = ip.replace("/3"," 224.0.0.0")
-	else:
-		sub = ip+" 255.255.255.255"
-	return sub
-
 
 def main (argv):
     # Parse
@@ -216,17 +132,17 @@ def main (argv):
         endpointSets = webApiGet('endpoints', 'Worldwide', clientRequestId)
         # filter results for Allow and Optimize endpoints, and transform these into tuples with port and category
         flatUrls = []
-        for endpointSet in endpointSets:
-            if endpointSet['category'] in ('Optimize', 'Allow'):
-                category = endpointSet['category']
-                urls = endpointSet['urls'] if 'urls' in endpointSet else []
-                tcpPorts = endpointSet['tcpPorts'] if 'tcpPorts' in endpointSet else ''
-                udpPorts = endpointSet['udpPorts'] if 'udpPorts' in endpointSet else ''
-                flatUrls.extend([(category, url, tcpPorts, udpPorts) for url in urls])
-        flatIps = []
+        #for endpointSet in endpointSets:
+        #    if endpointSet['category'] in ('Optimize', 'Allow'):
+        #        category = endpointSet['category']
+        #        urls = endpointSet['urls'] if 'urls' in endpointSet else []
+        #        tcpPorts = endpointSet['tcpPorts'] if 'tcpPorts' in endpointSet else ''
+        #        udpPorts = endpointSet['udpPorts'] if 'udpPorts' in endpointSet else ''
+        #        flatUrls.extend([(category, url, tcpPorts, udpPorts) for url in urls])
+        #flatIps = []
         printASA(endpointSets)
     else:
-        print('Office 365 worldwide commercial service instance endpoints are up-to-date')
+        print("Office 365 worldwide commercial service instance endpoints are up-to-date.")
 
 if __name__ == '__main__':
     main(sys.argv)
