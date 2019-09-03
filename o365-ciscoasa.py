@@ -9,7 +9,7 @@ import sys
 #Original starting code from Microsoft article:
 #(https://docs.microsoft.com/en-us/office365/enterprise/office-365-ip-web-service)
 #
-
+ 
 # helper to call the webservice and parse the response
 def webApiGet(methodName, instanceName, clientRequestId):
     ws = "https://endpoints.office.com"
@@ -41,7 +41,6 @@ def printASA(endpointSets):
         groupList = []
         for ip in flatIps:
             serviceArea = ip [0]
-            print (f"ServiceArea: {serviceArea} \n")
             if serviceArea != currentServiceArea:
                 if currentServiceArea != " ":
                     output.write (asaIpNetworkGroupObject(currentServiceArea,groupList))
@@ -57,8 +56,6 @@ def printASA(endpointSets):
         #print("DEBUG: groupList\n")
         #print(groupList)
         #print("DEBGUG \n")
-            print (uniqueIps)
-            input ("Wait")
         output.write (asaIpNetworkGroupObject(currentServiceArea,groupList))
 
 def asaIpNetworkGroupObject(groupName,objectList):
