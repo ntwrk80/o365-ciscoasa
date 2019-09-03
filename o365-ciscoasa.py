@@ -28,17 +28,11 @@ def printASA(endpointSets):
                 serviceArea = endpointSet['serviceArea']
                 # IPv4 strings have dots while IPv6 strings have colons
                 ip4s = [ip for ip in ips if '.' in ip]
-                uniqueIps = []
-                #Strip out duplicate IP Addresses.
-                for currentIp in ip4s:
-                    if currentIp not in uniqueIps:
-                        uniqueIps.append(currentIp)
-
                 tcpPorts = endpointSet['tcpPorts'] if 'tcpPorts' in endpointSet else ''
                 udpPorts = endpointSet['udpPorts'] if 'udpPorts' in endpointSet else ''
                 #print("Test")
                 #print(ip4s)
-                for ip in uniqueIps:
+                for ip in ip4s:
                     flatIps.extend([(serviceArea, category, ip, tcpPorts, udpPorts)])
 
         print("Converting O365 Endpoints into ASA Groups")
@@ -47,7 +41,7 @@ def printASA(endpointSets):
         groupList = []
         for ip in flatIps:
             serviceArea = ip [0]
-            #print (f"ServiceArea: {serviceArea} \n")
+            print (f"ServiceArea: {serviceArea} \n")
             if serviceArea != currentServiceArea:
                 if currentServiceArea != " ":
                     output.write (asaIpNetworkGroupObject(currentServiceArea,groupList))
