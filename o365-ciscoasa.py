@@ -57,7 +57,7 @@ def printASA(endpointSets):
         #print("DEBUG: groupList\n")
         #print(groupList)
         #print("DEBGUG \n")
-            output.write (asaIpNetworkGroupObject(currentServiceArea,groupList))
+        output.write (asaIpNetworkGroupObject(currentServiceArea,groupList))
 
 def asaIpNetworkGroupObject(groupName,objectList):
     #print ("ENTER asaIpNetworkGroupObject\n")
