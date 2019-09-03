@@ -42,11 +42,11 @@ def printASA(endpointSets):
         for ip in flatIps:
             serviceArea = ip [0]
             print (f"ServiceArea: {serviceArea} \n")
-            uniqueIps=[]
             if serviceArea != currentServiceArea:
                 if currentServiceArea != " ":
                     output.write (asaIpNetworkGroupObject(currentServiceArea,groupList))
                 groupList = []
+                uniqueIps = []
                 currentServiceArea = serviceArea
             if ip[2] not in uniqueIps:
                 uniqueIps.append(ip[2])
