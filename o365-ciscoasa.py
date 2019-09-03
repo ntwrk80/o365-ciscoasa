@@ -42,50 +42,22 @@ def printASA(endpointSets):
         for ip in flatIps:
             serviceArea = ip [0]
             print (f"ServiceArea: {serviceArea} \n")
+            uniqueIps=[]
             if serviceArea != currentServiceArea:
                 if currentServiceArea != " ":
                     output.write (asaIpNetworkGroupObject(currentServiceArea,groupList))
                 groupList = []
                 currentServiceArea = serviceArea
-            ipNet = ipaddress.ip_network(ip[2])
-            asaOutput=asaIpNetworkObject(ipNet,currentServiceArea)
-            groupList.append(asaOutput)
-            output.write (asaOutput[1] + "\n")
+            if ip[2] not in uniqueIps:
+                unqueIps.append(ip[2])
+                ipNet = ipaddress.ip_network(ip[2])
+                asaOutput=asaIpNetworkObject(ipNet,currentServiceArea)
+                groupList.append(asaOutput)
+                output.write (asaOutput[1] + "\n")
         #print("DEBUG: groupList\n")
         #print(groupList)
         #print("DEBGUG \n")
-        output.write (asaIpNetworkGroupObject(currentServiceArea,groupList))
-
-def printXML(endpointSets):
-    with open('O365-CiscoASA-ObjectGroups.txt', 'w') as output:
-
-        for endpointSet in endpointSets:
-            if endpointSet['category'] in ('Optimize', 'Allow'):
-                ips = endpointSet['ips'] if 'ips' in endpointSet else []
-                category = endpointSet['category']
-                serviceArea = endpointSet['serviceArea']
-                # IPv4 strings have dots while IPv6 strings have colons
-                ip4s = [ip for ip in ips if '.' in ip]
-                tcpPorts = endpointSet['tcpPorts'] if 'tcpPorts' in endpointSet else ''
-                udpPorts = endpointSet['udpPorts'] if 'udpPorts' in endpointSet else ''
-                flatIps.extend([(serviceArea, category, ip, tcpPorts, udpPorts) for ip in ip4s])
-        print('IPv4 Firewall IP Address Ranges')
-        #print (flatIps)
-        currentServiceArea = " "
-        output.write ("<AddressGroups xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"http://tempuri.org/IPAddressGroupsSchema.xsd\">\n")
-        for ip in flatIps:
-            serviceArea = ip [0]
-            if serviceArea != currentServiceArea:
-                if currentServiceArea != " ":
-                    output.write ("     </AddressGroup>\n")
-                currentServiceArea = serviceArea
-                output.write (f"     <AddressGroup enabled=\"true\" description=\"Office 365 {serviceArea}\">\n")
-            ipNet = ipaddress.ip_network(ip[2])
-            ipStart = ipNet[0]
-            ipEnd = ipNet[-1]
-            output.write (f"          <Range from=\"{ipStart}\" to=\"{ipEnd}\"/>\n")
-        output.write ("     </AddressGroup>\n")
-        output.write ("</AddressGroups>\n")
+            output.write (asaIpNetworkGroupObject(currentServiceArea,groupList))
 
 def asaIpNetworkGroupObject(groupName,objectList):
     #print ("ENTER asaIpNetworkGroupObject\n")
