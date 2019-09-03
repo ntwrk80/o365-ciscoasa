@@ -20,7 +20,6 @@ def webApiGet(methodName, instanceName, clientRequestId):
 
 def printASA(endpointSets):
     flatIps=[]
-    uniqueIps = []
     with open('O365-CiscoASA-ObjectGroups.txt', 'w') as output:
         for endpointSet in endpointSets:
             if endpointSet['category'] in ('Optimize', 'Allow'):
@@ -34,10 +33,8 @@ def printASA(endpointSets):
                 #print("Test")
                 #print(ip4s)
                 #Strip out duplicate IP Addresses.
-                for currentIp in ip4s:
-                    if currentIp not in uniqueIps:
-                        uniqueIps.append(currentIp)
-                for ip in uniqueIps:
+
+                for ip in flatIps:
                     flatIps.extend([(serviceArea, category, ip, tcpPorts, udpPorts)])
 
 
@@ -45,6 +42,7 @@ def printASA(endpointSets):
         #print (flatIps)
         currentServiceArea = " "
         groupList = []
+        uniqueIps = []
         for ip in flatIps:
             serviceArea = ip [0]
             #print (f"ServiceArea: {serviceArea} \n")
@@ -57,9 +55,6 @@ def printASA(endpointSets):
             asaOutput=asaIpNetworkObject(ipNet,currentServiceArea)
             groupList.append(asaOutput)
             output.write (asaOutput[1] + "\n")
-        #print("DEBUG: groupList\n")
-        #print(groupList)
-        #print("DEBGUG \n")
         output.write (asaIpNetworkGroupObject(currentServiceArea,groupList))
 
 def printXML(endpointSets):
