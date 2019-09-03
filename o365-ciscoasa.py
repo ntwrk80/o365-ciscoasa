@@ -49,7 +49,7 @@ def printASA(endpointSets):
                 groupList = []
                 currentServiceArea = serviceArea
             if ip[2] not in uniqueIps:
-                unqueIps.append(ip[2])
+                uniqueIps.append(ip[2])
                 ipNet = ipaddress.ip_network(ip[2])
                 asaOutput=asaIpNetworkObject(ipNet,currentServiceArea)
                 groupList.append(asaOutput)
