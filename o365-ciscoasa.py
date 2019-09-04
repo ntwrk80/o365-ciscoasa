@@ -9,7 +9,7 @@ import sys
 #Original starting code from Microsoft article:
 #(https://docs.microsoft.com/en-us/office365/enterprise/office-365-ip-web-service)
 #
- 
+
 # helper to call the webservice and parse the response
 def webApiGet(methodName, instanceName, clientRequestId):
     ws = "https://endpoints.office.com"
@@ -30,47 +30,38 @@ def printASA(endpointSets):
                 ip4s = [ip for ip in ips if '.' in ip]
                 tcpPorts = endpointSet['tcpPorts'] if 'tcpPorts' in endpointSet else ''
                 udpPorts = endpointSet['udpPorts'] if 'udpPorts' in endpointSet else ''
-                #print("Test")
-                #print(ip4s)
                 for ip in ip4s:
                     flatIps.extend([(serviceArea, category, ip, tcpPorts, udpPorts)])
 
         print("Converting O365 Endpoints into ASA Groups")
-        #print (flatIps)
         currentServiceArea = " "
         groupList = []
         for ip in flatIps:
             serviceArea = ip [0]
             if serviceArea != currentServiceArea:
+                #Set the current type like Common, Exchange, Skype, etc
                 if currentServiceArea != " ":
                     output.write (asaIpNetworkGroupObject(currentServiceArea,groupList))
                 groupList = []
                 uniqueIps = []
                 currentServiceArea = serviceArea
             if ip[2] not in uniqueIps:
+                #uniqueIps is used because the same IP can be listed multiple times with different ports.
                 uniqueIps.append(ip[2])
                 ipNet = ipaddress.ip_network(ip[2])
                 asaOutput=asaIpNetworkObject(ipNet,currentServiceArea)
                 groupList.append(asaOutput)
                 output.write (asaOutput[1] + "\n")
-        #print("DEBUG: groupList\n")
-        #print(groupList)
-        #print("DEBGUG \n")
         output.write (asaIpNetworkGroupObject(currentServiceArea,groupList))
 
 def asaIpNetworkGroupObject(groupName,objectList):
-    #print ("ENTER asaIpNetworkGroupObject\n")
     grpObject = "object-group network " + groupName.lower() + "\n"
     for item in objectList:
-        #print ("DEBUG: Print objectList item\n")
-        #print (item)
-        #print ("DEBUG")
         grpObject += f"   network-object object " + item[0] + "\n"
     grpObject += "\n"
     return grpObject
 
 def asaIpNetworkObject(network,productname):
-    #print ("ENTER asaIPNetworkObject\n")
     ip = str(network.network_address)
     net = str(network.netmask)
     name = "o365." + productname.lower() + "_" + ip
@@ -103,14 +94,6 @@ def main (argv):
         endpointSets = webApiGet('endpoints', 'Worldwide', clientRequestId)
         # filter results for Allow and Optimize endpoints, and transform these into tuples with port and category
         flatUrls = []
-        #for endpointSet in endpointSets:
-        #    if endpointSet['category'] in ('Optimize', 'Allow'):
-        #        category = endpointSet['category']
-        #        urls = endpointSet['urls'] if 'urls' in endpointSet else []
-        #        tcpPorts = endpointSet['tcpPorts'] if 'tcpPorts' in endpointSet else ''
-        #        udpPorts = endpointSet['udpPorts'] if 'udpPorts' in endpointSet else ''
-        #        flatUrls.extend([(category, url, tcpPorts, udpPorts) for url in urls])
-        #flatIps = []
         printASA(endpointSets)
     else:
         print("Office 365 worldwide commercial service instance endpoints are up-to-date.")
